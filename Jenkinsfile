@@ -32,13 +32,20 @@ pipeline {
         }
         stage ('sonar') {
             steps {
-                sh """
-                    echo "Starting Sonar Scan"
-                    mvn clean verify sonar:sonar \
-                        -Dsonar.projectKey=i27-${env.APPLICATION_NAME} \
-                        -Dsonar.host.url=${env.SONAR_URL} \
-                        -Dsonar.login=${env.SONAR_TOKEN}
-                """
+                echo "Starting SonarScan with quality gate"
+                withSonarQubeEnv('SonarQube') {
+                    sh """
+                        mvn clean verify sonar:sonar \
+                            -Dsonar.projectKey=i27-${env.APPLICATION_NAME} \
+                            -Dsonar.host.url=${env.SONAR_URL} \
+                            -Dsonar.login=${env.SONAR_TOKEN}
+                    """
+                }
+                timeout (time: 2, unit: 'MINUTES'){ // NANOSECONDS, ****
+                    script {
+                        waitForQualityGate abortPipeline: true
+                    }
+                } 
             }
         }
     }
