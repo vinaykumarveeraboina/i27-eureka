@@ -35,7 +35,7 @@ pipeline {
                 sh """
                     echo "Starting Sonar Scan"
                     mvn clean verify sonar:sonar \
-                        -Dsonar.projectKey=i27-eureka \
+                        -Dsonar.projectKey=i27-${env.APPLICATION_NAME} \
                         -Dsonar.host.url=${env.SONAR_URL} \
                         -Dsonar.login=${env.SONAR_TOKEN}
                 """
