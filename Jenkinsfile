@@ -12,6 +12,8 @@ pipeline {
         SONAR_URL = "http://34.239.44.34:9000"
         // SONAR_TOKEN = "sqa_6c69015b0cd422333397142a660072ec1f4f7fca"
         SONAR_TOKEN = credentials('sonar_creds')
+        POM_VERSION = readMavenPom().getVersion()
+        POM_PACKAGING = readMavenPom().getPackaging()
     }
     stages {
         stage('Build') {
@@ -46,6 +48,17 @@ pipeline {
                         waitForQualityGate abortPipeline: true
                     }
                 } 
+            }
+        }
+        stage ('Build Format') {
+            steps {
+                script { // i27-eureka-0.0.1-SNAPSHOT.jar
+                    sh """
+                        echo "Exisitng JAR Format: i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING}"
+                        echo "***** Below is my expected output ******"
+                        echo "Destination Source is i27-${env.APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${env.POM_PACKAGING}" 
+                    """
+                }
             }
         }
     }
