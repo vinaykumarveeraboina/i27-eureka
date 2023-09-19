@@ -14,6 +14,8 @@ pipeline {
         SONAR_TOKEN = credentials('sonar_creds')
         POM_VERSION = readMavenPom().getVersion()
         POM_PACKAGING = readMavenPom().getPackaging()
+        DOCKER_HUB = "docker.io/devopswithcloudhub"
+        DOCKER_REPO = "i27eurekaproject"
     }
     stages {
         stage('Build') {
@@ -69,6 +71,10 @@ pipeline {
                         cp ${workspace}/target/i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} ./.cicd
                         echo "listing files in .cicd folder"
                         ls -la ./.cicd
+                        echo "******************** Building Docker Image ********************"
+                        # docker build -t imagename .
+                        docker build --force-rm --no-cache --pull --rm=true --build-arg JAR_SOURCE=${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} --build-arg JAR_DEST=${env.APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${env.POM_PACKAGING} \
+                            -t ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT ./.cicd
                     """
                 }
             }
