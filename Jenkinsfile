@@ -66,6 +66,9 @@ pipeline {
                 script  {
                     sh """
                         ls -la
+                        cp ${workspace}/target/i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING}.jar ./.cicd
+                        echo "listing files in .cicd folder"
+                        ls -la ./.cicd
                     """
                 }
             }
