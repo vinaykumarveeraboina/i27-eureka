@@ -9,13 +9,15 @@ pipeline {
     }
     environment {
         APPLICATION_NAME = "eureka"
-        SONAR_URL = "http://3.85.109.238:9000"
+        SONAR_URL = "http://54.146.40.91:9000"
         // SONAR_TOKEN = "sqa_6c69015b0cd422333397142a660072ec1f4f7fca"
         SONAR_TOKEN = credentials('sonar_creds')
         POM_VERSION = readMavenPom().getVersion()
         POM_PACKAGING = readMavenPom().getPackaging()
         DOCKER_HUB = "docker.io/devopswithcloudhub"
         DOCKER_REPO = "i27eurekaproject"
+        USER_NAME = "devopswithcloudhub" // UserID for Dockerhub
+        DOCKER_CREDS = credentials('dockerhub_creds')
     }
     stages {
         stage('Build') {
@@ -75,6 +77,10 @@ pipeline {
                         # docker build -t imagename .
                         docker build --force-rm --no-cache --pull --rm=true --build-arg JAR_SOURCE=i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} --build-arg JAR_DEST=i27-${env.APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${env.POM_PACKAGING} \
                             -t ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT ./.cicd
+                        # Docker hub, Google Container registry, JFROG 
+                        echo "******************** Logging to Docker Registry ********************"
+                        docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
+                        docker push ${env.DOCKER_HUB}/i27-${env.APPLICATION_NAME}:$GIT_COMMIT
                     """
                 }
             }
