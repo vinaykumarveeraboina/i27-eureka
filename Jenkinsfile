@@ -93,7 +93,7 @@ pipeline {
                     // with this creddentials, i need to connect to dev environment 
                     // sshpass
                     script {
-                        sh "sshpass -p '$PASSWORD' -v ssh -o StrickHostKeyChecking=no $USERNAME@$docker_server_ip \"docker pull ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT\""
+                        sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_server_ip \"docker pull ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT\""
                     }
                 }
             }
