@@ -51,8 +51,9 @@ pipeline {
     }
     stages {
         stage('Build') {
+            echo "params is ${params.buildOnly}"
             when {
-                anyOf {
+                anyOf { 
                     expression {
                         params.buildOnly == 'yes'
                         params.dockerPush == 'yes'
