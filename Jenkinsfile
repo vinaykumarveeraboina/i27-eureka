@@ -85,60 +85,48 @@ pipeline {
                 }
             }
         }
-        stage ('Deploy to Dev') {
+        stage ('Deploy to Dev') { //5761
             steps {
-                echo "******************** Deploying to Dev Environment ********************"
-                withCredentials([usernamePassword(credentialsId: 'maha_docker_vm_creds', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-                    // some block
-                    // with this creddentials, i need to connect to dev environment 
-                    // sshpass
-                    script {
-                        // Test to Pull the container on the docker server
-                        sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_server_ip \"docker pull ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT\""
-                        //sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_server_ip \"***"
-                        echo "Stop the Container"
-                        // If we execute the below command it will fail for the first time,, as continers are not availble, stop/remove will cause a issue.
-                        // we can implement try catch block.
-                        try {
-                            sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_server_ip \"docker stop ${env.APPLICATION_NAME}-dev\""
-                            echo "Removing the Container"
-                            sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_server_ip \"docker rm ${env.APPLICATION_NAME}-dev\""
-                        } catch(err) {
-                            echo "Caught the error: $err"
-                        }
-                        // Run the container
-                        sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_server_ip \"docker run --restart always --name ${env.APPLICATION_NAME}-dev -p 5761:8761 -d ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT\""
-                        
-                    }
-                }
+              script {
+                dockerDeploy('dev', '5761', '8761').call()
+              }
             }
         }
-        stage ('Deploy to Test') {
+        stage ('Deploy to Test') { //6761
             steps {
-                echo "******************** Deploying to Test Environment ********************"
-                withCredentials([usernamePassword(credentialsId: 'maha_docker_vm_creds', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-                    // some block
-                    // with this creddentials, i need to connect to dev environment 
-                    // sshpass
-                    script {
-                        // Test to Pull the container on the docker server
-                        sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_server_ip \"docker pull ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT\""
-                        //sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_server_ip \"***"
-                        echo "Stop the Container"
-                        // If we execute the below command it will fail for the first time,, as continers are not availble, stop/remove will cause a issue.
-                        // we can implement try catch block.
-                        try {
-                            sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_server_ip \"docker stop ${env.APPLICATION_NAME}-test\""
-                            echo "Removing the Container"
-                            sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_server_ip \"docker rm ${env.APPLICATION_NAME}-test\""
-                        } catch(err) {
-                            echo "Caught the error: $err"
-                        }
-                        // Run the container
-                        sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_server_ip \"docker run --restart always --name ${env.APPLICATION_NAME}-test -p 6761:8761 -d ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT\""
-                        
-                    }
+              script {
+                dockerDeploy('test', '6761', '8761').call()
+              }
+            }
+        }
+
+    }
+}
+
+def dockerDeploy(envDeploy, hostPort, contPort){    
+    return {
+        echo "******************** Deploying to $envDeploy Environment ********************"
+        withCredentials([usernamePassword(credentialsId: 'maha_docker_vm_creds', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+            // some block
+            // with this creddentials, i need to connect to dev environment 
+            // sshpass
+            script {
+                // Test to Pull the container on the docker server
+                sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_server_ip \"docker pull ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT\""
+                //sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_server_ip \"***"
+                echo "Stop the Container"
+                // If we execute the below command it will fail for the first time,, as continers are not availble, stop/remove will cause a issue.
+                // we can implement try catch block.
+                try {
+                    sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_server_ip \"docker stop ${env.APPLICATION_NAME}-$envDeploy\""
+                    echo "Removing the Container"
+                    sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_server_ip \"docker rm ${env.APPLICATION_NAME}-$envDeploy\""
+                } catch(err) {
+                    echo "Caught the error: $err"
                 }
+                // Run the container
+                sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_server_ip \"docker run --restart always --name ${env.APPLICATION_NAME}-$envDeploy -p $hostPort:$contPort -d ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT\""
+                
             }
         }
     }
