@@ -10,11 +10,11 @@ pipeline {
     parameters {
         choice(name: 'sonarScans',
             choices: 'no\nyes',
-            description: "This will scan the applicaiton using sonar"
+            description: 'This will scan the applicaiton using sonar'
         )
         choice(name: 'buildOnly',
             choices: 'no\nyes',
-            description: "This will only build the application"
+            description: 'This will only build the application'
         )
         choice(name: 'dockerPush',
             choices: 'no\nyes',
