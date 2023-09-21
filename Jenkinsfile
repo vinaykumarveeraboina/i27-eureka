@@ -51,6 +51,14 @@ pipeline {
     }
     stages {
         stage('Build') {
+            when {
+                anyOf {
+                    expression {
+                        params.buildOnly == 'yes'
+                        params.dockerPush == 'yes'
+                    }
+                }
+            }
             // Build happens here 
             // Only build should happen, no tests should be available
             steps {
@@ -61,12 +69,29 @@ pipeline {
             }
         }
         stage ('Unit Tests'){
+            when {
+                anyOf {
+                    expression {
+                        params.buildOnly == 'yes'
+                        params.dockerPush == 'yes'
+                    }
+                }
+            }
             steps {
                 echo "Performing Unit Tests for ${env.APPLICATION_NAME} application"
                 sh "mvn test"
             }
         }
         stage ('sonar') {
+            when {
+                anyOf {
+                    expression {
+                        params.sonarScans == 'yes'
+                        params.buildOnly == 'yes'
+                        params.dockerPush == 'yes'
+                    }
+                }
+            }
             steps {
                 echo "Starting SonarScan with quality gate"
                 withSonarQubeEnv('SonarQube') {
@@ -96,6 +121,13 @@ pipeline {
             }
         }
         stage ('Docker Build and Push') {
+            when {
+                anyOf {
+                    expression {
+                        params.dockerPush == 'yes'
+                    }
+                }
+            }
             steps {
                 script  {
                     sh """
@@ -116,6 +148,13 @@ pipeline {
             }
         }
         stage ('Deploy to Dev') { //5761
+            when {
+                anyOf {
+                    expression {
+                        params.deployToDev == 'yes'
+                    }
+                }
+            }
             steps {
               script {
                 dockerDeploy('dev', '5761', '8761').call()
@@ -123,6 +162,13 @@ pipeline {
             }
         }
         stage ('Deploy to Test') { //6761
+            when {
+                anyOf {
+                    expression {
+                        params.deployToTest == 'yes'
+                    }
+                }
+            }
             steps {
               script {
                 dockerDeploy('test', '6761', '8761').call()
