@@ -50,22 +50,25 @@ pipeline {
         DOCKER_CREDS = credentials('dockerhub_creds')
     }
     stages {
-        stage('Build') {
+        stage ('Build') {
             when {
                 anyOf { 
                     expression {
-                        params.buildOnly == 'yes'
                         params.dockerPush == 'yes'
+                        params.buildOnly == 'yes'
                     }
                 }
             }
             // Build happens here 
             // Only build should happen, no tests should be available
             steps {
-                echo "Building the ${env.APPLICATION_NAME} application"
-                // maven build should happpen here 
-                sh "mvn clean package -DskipTests=true"
-                archiveArtifacts artifacts: 'target/*jar', followSymlinks: false
+                script {
+                    echo "Building the ${env.APPLICATION_NAME} application"
+                    // maven build should happpen here 
+                    sh "mvn clean package -DskipTests=true"
+                    archiveArtifacts artifacts: 'target/*jar', followSymlinks: false
+                }
+
             }
         }
         stage ('Unit Tests'){
