@@ -109,17 +109,6 @@ pipeline {
                 } 
             }
         }
-        stage ('Build Format') {
-            steps {
-                script { // i27-eureka-0.0.1-SNAPSHOT.jar
-                    sh """
-                        echo "Exisitng JAR Format: i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING}"
-                        echo "***** Below is my expected output ******"
-                        echo "Destination Source is i27-${env.APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${env.POM_PACKAGING}" 
-                    """
-                }
-            }
-        }
         stage ('Docker Build and Push') {
             when {
                 anyOf {
