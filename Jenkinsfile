@@ -7,6 +7,36 @@ pipeline {
         maven 'Maven-3.8.8'
         jdk 'JDK-17'
     }
+    parameters {
+        choice(name: 'sonarScans',
+            choices: 'yes\nno',
+            description: "This will scan the applicaiton using sonar"
+        )
+        choice(name: 'buildOnly',
+            choices: 'yes\nno',
+            description: "This will only build the application"
+        )
+        choice(name: 'dockerPush',
+            choices: 'yes\nno',
+            description: "This will trigger the build, docker build and docker push"
+        )
+        choice(name: 'deployToDev',
+            choices: 'yes\nno',
+            description: "This will Deploy my app to Dev env"
+        )
+        choice(name: 'deployToTest',
+            choices: 'yes\nno',
+            description: "This will Deploy my app to Test env"
+        )
+        choice(name: 'deployToStage',
+            choices: 'yes\nno',
+            description: "This will Deploy my app to Stage env"
+        )
+        choice(name: 'deployToProd',
+            choices: 'yes\nno',
+            description: "This will Deploy my app to Prod env"
+        )
+    }
     environment {
         APPLICATION_NAME = "eureka"
         SONAR_URL = "http://54.161.55.166:9000"
