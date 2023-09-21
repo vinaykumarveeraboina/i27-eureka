@@ -100,9 +100,9 @@ pipeline {
                         // If we execute the below command it will fail for the first time,, as continers are not availble, stop/remove will cause a issue.
                         // we can implement try catch block.
                         try {
-                            sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_server_ip \"docker stop --name ${env.APPLICATION_NAME}-dev\""
+                            sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_server_ip \"docker stop ${env.APPLICATION_NAME}-dev\""
                             echo "Removing the Container"
-                            sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_server_ip \"docker rm --name ${env.APPLICATION_NAME}-dev\""
+                            sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_server_ip \"docker rm ${env.APPLICATION_NAME}-dev\""
                         } catch(err) {
                             echo "Caught the error: $err"
                         }
