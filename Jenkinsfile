@@ -51,7 +51,6 @@ pipeline {
     }
     stages {
         stage('Build') {
-            echo "params is ${params.buildOnly}"
             when {
                 anyOf { 
                     expression {
