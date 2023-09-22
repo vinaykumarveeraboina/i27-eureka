@@ -63,10 +63,7 @@ pipeline {
             // Only build should happen, no tests should be available
             steps {
                 script {
-                    echo "Building the ${env.APPLICATION_NAME} application"
-                    // maven build should happpen here 
-                    sh "mvn clean package -DskipTests=true"
-                    archiveArtifacts artifacts: 'target/*jar', followSymlinks: false
+                    buildApp().call()
                 }
 
             }
@@ -122,20 +119,7 @@ pipeline {
             }
             steps {
                 script  {
-                    sh """
-                        ls -la
-                        cp ${workspace}/target/i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} ./.cicd
-                        echo "listing files in .cicd folder"
-                        ls -la ./.cicd
-                        echo "******************** Building Docker Image ********************"
-                        # docker build -t imagename .
-                        docker build --force-rm --no-cache --pull --rm=true --build-arg JAR_SOURCE=i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} --build-arg JAR_DEST=i27-${env.APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${env.POM_PACKAGING} \
-                            -t ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT ./.cicd
-                        # Docker hub, Google Container registry, JFROG 
-                        echo "******************** Logging to Docker Registry ********************"
-                        docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
-                        docker push ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT
-                    """
+                    dockerBuildandPush().call()
                 }
             }
         }
@@ -149,6 +133,7 @@ pipeline {
             }
             steps {
               script {
+                imageValidation().call()
                 dockerDeploy('dev', '5761', '8761').call()
               }
             }
@@ -163,6 +148,7 @@ pipeline {
             }
             steps {
               script {
+                imageValidation().call()
                 dockerDeploy('test', '6761', '8761').call()
               }
             }
@@ -205,6 +191,47 @@ def dockerDeploy(envDeploy, hostPort, contPort){
     }
 }
 
+def buildApp() {
+    return {
+        echo "Building the ${env.APPLICATION_NAME} application"
+        // maven build should happpen here 
+        sh "mvn clean package -DskipTests=true"
+        archiveArtifacts artifacts: 'target/*jar', followSymlinks: false
+    }
+}
+
+def imageValidation() {
+    return {
+        println("Pulling the Docker image")
+        try {
+            sh "docker pull ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT"
+            println ("Pull Success,!!! Deploying !!!!!") 
+        }
+        catch (Exception e) {
+            println("OOPS, Docker image with this tag is not available")
+            println("So, Building the app, creating the image and pushing to registry")
+            buildApp().call()
+            dockerBuildandPush().call()
+        }
+    }
+}
+
+def dockerBuildandPush() {
+    return {
+        ls -la
+        cp ${workspace}/target/i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} ./.cicd
+        echo "listing files in .cicd folder"
+        ls -la ./.cicd
+        echo "******************** Building Docker Image ********************"
+        # docker build -t imagename .
+        docker build --force-rm --no-cache --pull --rm=true --build-arg JAR_SOURCE=i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} --build-arg JAR_DEST=i27-${env.APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${env.POM_PACKAGING} \
+            -t ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT ./.cicd
+        # Docker hub, Google Container registry, JFROG 
+        echo "******************** Logging to Docker Registry ********************"
+        docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
+        docker push ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT 
+    }
+}
 
 // 8761 is the container port , we cant change it.
 // if we really want to change , we can change it using -Dserver.port=9090, this will be your container port
