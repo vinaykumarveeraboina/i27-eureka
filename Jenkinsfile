@@ -218,18 +218,18 @@ def imageValidation() {
 
 def dockerBuildandPush() {
     return {
-        ls -la
-        cp ${workspace}/target/i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} ./.cicd
+        
+        sh "cp ${workspace}/target/i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} ./.cicd"
         echo "listing files in .cicd folder"
-        ls -la ./.cicd
+        sh "ls -la ./.cicd"
         echo "******************** Building Docker Image ********************"
         
-        docker build --force-rm --no-cache --pull --rm=true --build-arg JAR_SOURCE=i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} --build-arg JAR_DEST=i27-${env.APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${env.POM_PACKAGING} \
-            -t ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT ./.cicd
+        sh "docker build --force-rm --no-cache --pull --rm=true --build-arg JAR_SOURCE=i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} --build-arg JAR_DEST=i27-${env.APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${env.POM_PACKAGING} \
+            -t ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT ./.cicd"
         
         echo "******************** Logging to Docker Registry ********************"
-        docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
-        docker push ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT 
+        sh "docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}"
+        sh "docker push ${env.DOCKER_HUB}/${env.DOCKER_REPO}:$GIT_COMMIT"
     }
 }
 
