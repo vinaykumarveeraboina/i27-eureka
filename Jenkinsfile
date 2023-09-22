@@ -170,11 +170,17 @@ pipeline {
         }
         stage ('Deploy to Prod') { //6761
             when {
-                anyOf {
-                    expression {
-                        params.deployToProd == 'yes'
+                allOf {
+                    anyOf {
+                        expression {
+                            params.deployToProd == 'yes'
+                        }
+                    }
+                    anyOf {
+                        branch 'release/*'
                     }
                 }
+
             }
             steps {
               script {
