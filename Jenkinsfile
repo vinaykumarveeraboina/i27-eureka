@@ -1,4 +1,4 @@
 @Library ("com.i27academy.slb@master") _
 mainPipeline(
-    appName: 'myeureka'
+    appName: 'eureka'
 )
