@@ -1,6 +1,6 @@
 name: i27-eureka
 fullname: i27-eureka-dev
-repliacas:
+replicas:
   default: 1
 image:
   name: devopswithcloudhub/i27eurekaproject
