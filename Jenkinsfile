@@ -12,6 +12,10 @@ pipeline{
     environment{
         APPLICATION_NAME = 'eureka'
     }
+    tools{
+        maven 'maven-3.8.8'
+        jdk  'Jdk17'
+    }
   stages {
     //application build happens here
     stage ('build')
