@@ -28,5 +28,15 @@ pipeline{
 
     }
   } 
+  stage ('unit test')
+    {
+      steps{
+         // if env varible which we are calling is built in jenkins variable , no need to write env.varbilename , we can call it directly 
+        echo " Tesitng the ${env.APPLICATION_NAME} application"
+        sh "mvn test"
+
+
+    }
+  } 
   } 
 }
