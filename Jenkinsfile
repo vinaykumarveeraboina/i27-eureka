@@ -45,8 +45,8 @@ pipeline{
 
 
      }
-    stage ('docker build')
-    {
+    stage ('docker format')
+     {
       steps{
 
 
@@ -60,6 +60,19 @@ pipeline{
 
         echo "CUSTOM_FORMAT : ${APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${POM_PACKAGING}"
       }
-    } 
+     } 
+    stage ('docker Build')
+    {
+      steps{
+        sh """
+            ls -la
+            
+             cp "${workspace}/target/i27-${APPLICATION_NAME}-${POM_VERSION}.${POM_PACKAGING} ./.cicd
+        """
+        // /home/ansible/jenkins/workspace/i27-eureka_master/target/i27-eureka-0.0.1-SNAPSHOT.jar
+      }
+    }
+  
+  
   } 
   } 
