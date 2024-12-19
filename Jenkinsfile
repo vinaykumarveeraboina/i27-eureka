@@ -11,6 +11,8 @@ pipeline{
     }
     environment{
         APPLICATION_NAME = 'eureka'
+        POM_VERSION  = readMavenPom().getVersion()
+        POM_PACKAGING = readMavenPom().getPackaging()
     }
     tools{
         maven 'maven-3.8.8'
@@ -19,16 +21,16 @@ pipeline{
   stages {
     //application build happens here
     stage ('build')
-    {
+     {
       steps{
          // if env varible which we are calling is built in jenkins variable , no need to write env.varbilename , we can call it directly 
         echo " building the ${env.APPLICATION_NAME} application"
         sh "mvn clean package -D skipTests=true"
 
 
-    }
-  } 
-  stage ('unit test')
+       }
+      } 
+    stage ('unit test')
     {
       steps{
          // if env varible which we are calling is built in jenkins variable , no need to write env.varbilename , we can call it directly 
@@ -42,6 +44,16 @@ pipeline{
         }
 
 
-    }
+     }
+    stage ('docker build')
+    {
+      steps{
+
+
+        //  how to read the pom.xml 
+
+        echo "JAR-SOURCE : ${APPLICATION_NAME}-${POM_VERSION}.${POM_PACKAGING}"
+      }
+    } 
   } 
   } 
