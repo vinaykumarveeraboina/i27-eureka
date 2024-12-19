@@ -10,10 +10,11 @@ pipeline{
         label 'k8s-slave'
     }
     environment{
-        DOCKERHUB = 'vinayrepo'
+        DOCKERHUB = 'docker.io/vinayrepo'
         APPLICATION_NAME = 'eureka'
         POM_VERSION  = readMavenPom().getVersion()
         POM_PACKAGING = readMavenPom().getPackaging()
+        DOCKER_CREDS = credentials(DokcerHub)
     }
     tools{
         maven 'maven-3.8.8'
@@ -77,6 +78,14 @@ pipeline{
              docker build --force-rm --no-cache --pull --rm=true -t ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd 
 
              docker images 
+             echo " *****************   Docker login ************************
+
+              docker login ${env.DOCKERHUB} -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
+
+             echo " ********************* Docker push *************************************
+
+             ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
+
         """
         // /home/ansible/jenkins/workspace/i27-eureka_master/target/i27-eureka-0.0.1-SNAPSHOT.jar
       }
