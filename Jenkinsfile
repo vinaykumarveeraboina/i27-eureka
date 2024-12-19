@@ -58,7 +58,7 @@ pipeline{
         //need to have below formating way 
         //eureka-buildnumber-branchname.packaging
 
-        echo "JAR-DEST : ${APPLICATION_NAME}-${BUILD_NUMBER}.${BRANCH_NAME}.${POM_PACKAGING}"
+        echo "JAR-DEST : ${APPLICATION_NAME}-${currentBuild.number}.${BRANCH_NAME}.${POM_PACKAGING}"
       }
     } 
   } 
