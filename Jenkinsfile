@@ -10,7 +10,7 @@ pipeline{
         label 'k8s-slave'
     }
     environment{
-        DOCKERHUB = 'docker.io/vinayrepo'
+        DOCKERHUB = "docker.io/vinayrepo"
         APPLICATION_NAME = 'eureka'
         POM_VERSION  = readMavenPom().getVersion()
         POM_PACKAGING = readMavenPom().getPackaging()
@@ -84,7 +84,7 @@ pipeline{
 
              echo " ********************* Docker push ************************************* "
 
-              docker push docker.io/${env.APPLICATION_NAME}:${GIT_COMMIT}
+              docker push ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
 
         """
         // /home/ansible/jenkins/workspace/i27-eureka_master/target/i27-eureka-0.0.1-SNAPSHOT.jar
