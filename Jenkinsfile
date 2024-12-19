@@ -81,8 +81,8 @@ pipeline{
 
              echo "***********************  Building Docker Image  *********************************"
              
-             docker build --force-rm --no-cache --pull --rm=true --build-args JAR_SOURCE=i27-${APPLICATION_NAME}-${POM_VERSION}.${POM_PACKAGING} -t ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd 
-
+             
+docker build --force-rm --no-cache --pull --rm=true --build-arg JAR_SOURCE=i27-${APPLICATION_NAME}-${POM_VERSION}.${POM_PACKAGING} -t ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd 
              docker images 
              echo " *****************   Docker login ************************ "
 
