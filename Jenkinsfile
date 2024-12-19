@@ -53,6 +53,12 @@ pipeline{
         //  how to read the pom.xml 
 
         echo "JAR-SOURCE : ${APPLICATION_NAME}-${POM_VERSION}.${POM_PACKAGING}"
+
+
+        //need to have below formating way 
+        //eureka-buildnumber-branchname.packaging
+
+        echo "JAR-DEST : ${APPLICATION_NAME}-${BUILD_NUMBER}.${BRANCH_NAME}.${POM_PACKAGING}"
       }
     } 
   } 
