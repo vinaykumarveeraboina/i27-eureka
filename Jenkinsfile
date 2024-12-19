@@ -14,7 +14,7 @@ pipeline{
         APPLICATION_NAME = 'eureka'
         POM_VERSION  = readMavenPom().getVersion()
         POM_PACKAGING = readMavenPom().getPackaging()
-        DOCKER_CREDS = credentials(DokcerHub)
+        DOCKER_CREDS = credentials('DokcerHub')
     }
     tools{
         maven 'maven-3.8.8'
