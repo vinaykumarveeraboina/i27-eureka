@@ -10,6 +10,7 @@ pipeline{
         label 'k8s-slave'
     }
     environment{
+        DOCKERHUB = 'vinayrepo'
         APPLICATION_NAME = 'eureka'
         POM_VERSION  = readMavenPom().getVersion()
         POM_PACKAGING = readMavenPom().getPackaging()
@@ -70,6 +71,12 @@ pipeline{
              cp ${workspace}/target/i27-${APPLICATION_NAME}-${POM_VERSION}.${POM_PACKAGING} ./.cicd
 
              ls -la ./.cicd
+
+             echo "***********************  Building Docker Image  *********************************"
+             
+             docker build --force-rm --no-cache --pull --rm=true -t ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd 
+
+             docker images 
         """
         // /home/ansible/jenkins/workspace/i27-eureka_master/target/i27-eureka-0.0.1-SNAPSHOT.jar
       }
