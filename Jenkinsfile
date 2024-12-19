@@ -67,7 +67,7 @@ pipeline{
         sh """
             ls -la
             
-             cp "${workspace}/target/i27-${APPLICATION_NAME}-${POM_VERSION}.${POM_PACKAGING} ./.cicd"
+             cp ${workspace}/target/i27-${APPLICATION_NAME}-${POM_VERSION}.${POM_PACKAGING} ./.cicd
 
              ls -la ./.cicd
         """
