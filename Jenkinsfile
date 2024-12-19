@@ -9,6 +9,12 @@ pipeline{
     agent{
         label 'k8s-slave'
     }
+    options { 
+      // Discard old builds
+      
+      buildDiscarder(logRotator(daysToKeepStr: '7', numToKeepStr: '5'))
+      
+      }
     environment{
         DOCKERHUB = "docker.io/vinaykumarveeraboina"
         APPLICATION_NAME = 'eureka'
