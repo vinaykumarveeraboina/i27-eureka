@@ -10,7 +10,7 @@ pipeline{
         label 'k8s-slave'
     }
     environment{
-        DOCKERHUB = 'docker.io/vinayrepo'
+        DOCKERHUB = 'vinayrepo'
         APPLICATION_NAME = 'eureka'
         POM_VERSION  = readMavenPom().getVersion()
         POM_PACKAGING = readMavenPom().getPackaging()
