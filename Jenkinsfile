@@ -80,7 +80,7 @@ pipeline{
              docker images 
              echo " *****************   Docker login ************************ "
 
-              docker login docker.io -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
+              docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
 
              echo " ********************* Docker push ************************************* "
 
