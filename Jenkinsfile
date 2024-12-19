@@ -84,7 +84,7 @@ pipeline{
 
              echo " ********************* Docker push ************************************* "
 
-             ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
+              docker push ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
 
         """
         // /home/ansible/jenkins/workspace/i27-eureka_master/target/i27-eureka-0.0.1-SNAPSHOT.jar
