@@ -21,9 +21,9 @@ pipeline{
         POM_VERSION  = readMavenPom().getVersion()
         POM_PACKAGING = readMavenPom().getPackaging()
         DOCKER_CREDS = credentials('DokcerHub')
-        SONAR_ORGANIZATION = 'Githuborgnization'
-        SONAR_PROJECT_KEY = 'vinaykumarveeraboina_i27-eureka'
-        SONAR_TOKEN = '68a2bd72b33e964fd34cc26ef3fa180970f26e46'
+        SONAR_URL = 'http://34.45.232.31:9000'
+        
+        SONAR_TOKEN = credentials('sonar-secret')
     }
     tools{
         maven 'maven-3.8.8'
@@ -62,8 +62,8 @@ pipeline{
 
            mvn clean verify sonar:sonar \
                -Dsonar.projectKey=i127-eureka \
-               -Dsonar.host.url=http://34.45.232.31:9000 \
-               -Dsonar.login=sqp_2e8bedf5347bf1663d9227425bc0803851e2dc58
+               -Dsonar.host.url=${env.SONAR_URL} \
+               -Dsonar.login=${SONAR_TOKEN}
         """
       }
      }
