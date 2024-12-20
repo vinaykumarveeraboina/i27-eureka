@@ -124,62 +124,47 @@ pipeline{
     stage ("Docker deploy to DEV ")
     {
      steps{
-        echo "************************  Deplpoying to Docker Dev  ********************************"
+        script{
+        DockerDeploy('dev','5761','8761').call()
 
-
-        withCredentials([usernamePassword(credentialsId: 'DockerHost', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]){
-        
-         
-        // some block
-
-         //with the help of this block the slave will be connecting the docker vm ,and execute the command to create the containers
-
-         // sshpass -p -v ssh-o StrictHostKeyChecking=no username@ipaddess command 
-            // sh "sshpass -p ${PASSWORD}-v ssh-o StrictHostKeyChecking=no ${USERNAME}@${docker_dev_server} docker pull ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} "
-          
-          //pulling the contaienr 
-            echo " ******************   PULLING the container from docker hub ********************  "
-           sh """
-           sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker pull ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
-          
-           """
-          script{
-          try {
-
-           echo " ******************   stopping  the container     ********************  "
-           sh """
-           sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker stop ${env.APPLICATION_NAME}-dev
-          
-           """
-
-           echo " ******************   removing  the container  ********************  "
-           sh """
-           sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker rm  ${env.APPLICATION_NAME}-dev
-          
-           """
-          }
-
-          catch(err)
-          {
-            echo " caught the Error is ${err}"
-          }
-          }
-
-            echo " ****************  runnng the container ***************** "
-
-           sh """
-           sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker run -d -p 5761:8761 --name ${env.APPLICATION_NAME}-dev  ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
-
-          """
         }
-     }
 
     }
   
   stage ("Docker deploy to TEST env ")
     {
      steps{
-        echo "************************  Deplpoying to Docker TEST  ********************************"
+        
+        script{
+        DockerDeploy('test','6761','8761').call()
+
+        }
+     }
+     }
+
+  stage ("Docker deploy to STAGE env ")
+    {
+     steps{
+        
+        script{
+        DockerDeploy('stage','7761','8761').call()
+
+        }
+     }
+     } 
+    }
+  } 
+}
+  
+
+
+// this method is developed for deployning our app in different env 
+
+def DockerDeploy(envdeploy,hostport,contport)
+
+{
+
+  echo "************************  Deplpoying to Docker $envdeploy  ********************************"
 
 
         withCredentials([usernamePassword(credentialsId: 'DockerHost', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]){
@@ -196,13 +181,13 @@ pipeline{
 
            echo " ******************   stopping  the container     ********************  "
            sh """
-           sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker stop ${env.APPLICATION_NAME}-test
+           sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker stop ${env.APPLICATION_NAME}-t$envdeployest
           
            """
 
            echo " ******************   removing  the container  ********************  "
            sh """
-           sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker rm  ${env.APPLICATION_NAME}-test
+           sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker rm  ${env.APPLICATION_NAME}-$envdeploy
           
            """
           }
@@ -216,16 +201,10 @@ pipeline{
             echo " ****************  runnng the container ***************** "
 
            sh """
-           sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker run -d -p 6761:8761 --name ${env.APPLICATION_NAME}-test  ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
+           sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker run -d -p $hostport:$contport --name ${env.APPLICATION_NAME}-$envdeploy  ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
 
           """
         }
-     }
-
-    }
-  
-  } 
-  }
-  
+}
 
  
