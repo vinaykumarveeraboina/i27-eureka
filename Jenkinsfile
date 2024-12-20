@@ -123,19 +123,21 @@ pipeline{
     }
     stage ("Docker deploy")
     {
+     steps{
+        echo "************************  Deplpoying to Docker Dev  ********************************"
 
-      echo "************************  Deplpoying to Docker Dev  ********************************"
 
+        withCredentials([usernamePassword(credentialsId: 'DockerHost', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')])
+        
+         
+        // some block
 
-      withCredentials([usernamePassword(credentialsId: 'DockerHost', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-    // some block
-
-     //with the help of this block the slave will be connecting the docker vm ,and execute the command to create the containers
+         //with the help of this block the slave will be connecting the docker vm ,and execute the command to create the containers
 
          // sshpass -p -v ssh-o StrictHostKeyChecking=no username@ipaddess command 
              sh " sshpass -p ${PASSWORD}-v ssh-o StrictHostKeyChecking=no ${USERNAME}@${docker-dev-server} hostname -i  "
 
-              }
+        }
 
     }
   
