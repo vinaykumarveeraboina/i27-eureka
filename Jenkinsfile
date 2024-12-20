@@ -126,10 +126,8 @@ pipeline{
      steps{
         script{
         DockerDeploy('dev','5761','8761').call()
-
         }
-
-    }
+        }
   
   stage ("Docker deploy to TEST env ")
     {
@@ -138,8 +136,8 @@ pipeline{
         script{
         DockerDeploy('test','6761','8761').call()
 
-        }
-     }
+         }
+      }
      }
 
   stage ("Docker deploy to STAGE env ")
@@ -150,8 +148,8 @@ pipeline{
         DockerDeploy('stage','7761','8761').call()
 
         }
-     }
-     } 
+       }
+    } 
     }
   } 
 }
