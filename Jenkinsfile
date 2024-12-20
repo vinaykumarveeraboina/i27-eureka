@@ -179,7 +179,7 @@ def DockerDeploy(envdeploy,hostport,contport)
 
            echo " ******************   stopping  the container     ********************  "
            sh """
-           sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker stop ${env.APPLICATION_NAME}-t$envdeployest
+           sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker stop ${env.APPLICATION_NAME}-t$envdeploy
           
            """
 
