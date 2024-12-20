@@ -76,6 +76,7 @@ pipeline{
                 waitForQualityGate abortPipeline: true
               }
      }
+      }
 
     stage ('Docker-Format')
      {
