@@ -6,6 +6,7 @@ jfrogPipeline(
 //This jenkins file is for eureka deploy
 
 pipeline{
+
     agent{
         label 'k8s-slave'
     }
@@ -123,4 +124,5 @@ docker build --force-rm --no-cache --pull --rm=true --build-arg JAR_SOURCE=i27-$
   
   } 
   } 
+}
  
