@@ -21,6 +21,9 @@ pipeline{
         POM_VERSION  = readMavenPom().getVersion()
         POM_PACKAGING = readMavenPom().getPackaging()
         DOCKER_CREDS = credentials('DokcerHub')
+        SONAR_ORGANIZATION = 'Githuborgnization'
+        SONAR_PROJECT_KEY = 'i27-eureka'
+        SONAR_TOKEN = '9677d92d0b5f979ed92f17719e7de20bbc423195'
     }
     tools{
         maven 'maven-3.8.8'
@@ -28,7 +31,7 @@ pipeline{
     }
   stages {
     //application build happens here
-    stage ('build')
+    stage ('Build')
      {
       steps{
          // if env varible which we are calling is built in jenkins variable , no need to write env.varbilename , we can call it directly 
@@ -38,7 +41,7 @@ pipeline{
 
        }
       } 
-    stage ('unit test')
+    stage ('Unit-Test')
     {
       steps{
          // if env varible which we are calling is built in jenkins variable , no need to write env.varbilename , we can call it directly 
@@ -51,9 +54,22 @@ pipeline{
           }
         }
 
+     stage ('Sonar _Test'){
+      steps{
+        sh """
 
+         echo " ************************* starting sonar scan ************************ "
+
+         mvn sonar:sonar \ 
+         -Dsonar.organization=$SONAR_ORGANIZATION \ 
+           -Dsonar.projectKey=$SONAR_PROJECT_KEY \ 
+           -Dsonar.host.url=https://sonarcloud.io \ 
+           -Dsonar.login=$SONAR_TOKEN """ 
+        """
+      }
      }
-    stage ('docker format')
+     }
+    stage ('Docker-Format')
      {
       steps{
 
@@ -69,7 +85,7 @@ pipeline{
         echo "CUSTOM_FORMAT : ${APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${POM_PACKAGING}"
       }
      } 
-    stage ('docker Build')
+    stage ('Docker Build and Push ')
     {
       steps{
         sh """
