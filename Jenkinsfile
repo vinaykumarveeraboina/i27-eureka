@@ -144,7 +144,7 @@ pipeline{
           
            """
 
-          try{
+          try {
 
            echo " ******************   stopping  the container     ********************  "
            sh """
@@ -158,6 +158,7 @@ pipeline{
           
            """
           }
+          
           catch(err)
           {
             echo " caught the Error is ${err}"
