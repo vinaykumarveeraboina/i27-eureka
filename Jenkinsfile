@@ -144,6 +144,7 @@ pipeline{
           
            """
 
+          try{
 
            echo " ******************   stopping  the container     ********************  "
            sh """
@@ -156,7 +157,11 @@ pipeline{
            sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker rm  ${env.APPLICATION_NAME}-dev
           
            """
-
+          }
+          catch(err)
+          {
+            echo " caught the Error is ${err}"
+          }
 
             echo " ****************  runnng the container ***************** "
 
