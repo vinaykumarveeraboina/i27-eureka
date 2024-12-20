@@ -58,14 +58,12 @@ pipeline{
       steps{
         sh """
 
-           echo " ************************* starting sonar scan ************************ "
+           echo " *************************      STARTING SONAR ANALYSIS     ************************ "
 
-           mvn sonar:sonar \
-            -Dsonar.organization=${SONAR_ORGANIZATION} \
-            -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login= 'vinaykumarveeraboina' \
-            -Dsonar.password='Devops@1024'
+           mvn clean verify sonar:sonar \
+               -Dsonar.projectKey=i127-eureka \
+               -Dsonar.host.url=http://34.45.232.31:9000 \
+               -Dsonar.login=sqp_2e8bedf5347bf1663d9227425bc0803851e2dc58
         """
       }
      }
