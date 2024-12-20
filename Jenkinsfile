@@ -121,7 +121,7 @@ pipeline{
         // /home/ansible/jenkins/workspace/i27-eureka_master/target/i27-eureka-0.0.1-SNAPSHOT.jar
       }
     }
-    stage ("Docker deploy")
+    stage ("Docker deploy to DEV ")
     {
      steps{
         echo "************************  Deplpoying to Docker Dev  ********************************"
@@ -176,6 +176,53 @@ pipeline{
 
     }
   
+  stage ("Docker deploy to TEST env ")
+    {
+     steps{
+        echo "************************  Deplpoying to Docker TEST  ********************************"
+
+
+        withCredentials([usernamePassword(credentialsId: 'DockerHost', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]){
+        
+         
+      
+            echo " ******************   PULLING the container from docker hub ********************  "
+           sh """
+           sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker pull ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
+          
+           """
+          script{
+          try {
+
+           echo " ******************   stopping  the container     ********************  "
+           sh """
+           sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker stop ${env.APPLICATION_NAME}-test
+          
+           """
+
+           echo " ******************   removing  the container  ********************  "
+           sh """
+           sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker rm  ${env.APPLICATION_NAME}-test
+          
+           """
+          }
+
+          catch(err)
+          {
+            echo " caught the Error is ${err}"
+          }
+          }
+
+            echo " ****************  runnng the container ***************** "
+
+           sh """
+           sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker run -d -p 6761:8761 --name ${env.APPLICATION_NAME}-test  ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
+
+          """
+        }
+     }
+
+    }
   
   } 
   }
