@@ -61,10 +61,10 @@ pipeline{
            echo " ************************* starting sonar scan ************************ "
 
            mvn sonar:sonar \
-            -Dsonar.organization=$SONAR_ORGANIZATION  \
-            -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+            -Dsonar.organization=${SONAR_ORGANIZATION} \
+            -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
             -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=$SONAR_TOKEN 
+            -Dsonar.login=${SONAR_TOKEN }
         """
       }
      }
