@@ -133,7 +133,7 @@ pipeline{
      //with the help of this block the slave will be connecting the docker vm ,and execute the command to create the containers
 
          // sshpass -p -v ssh-o StrictHostKeyChecking=no username@ipaddess command 
-             sh " sshpass -p ${PASSWORD}-v ssh-o StrictHostKeyChecking=no ${USERNAME}@${docker-dev-server}
+             sh " sshpass -p ${PASSWORD}-v ssh-o StrictHostKeyChecking=no ${USERNAME}@${docker-dev-server} \n
              
                   hostname -i  "
 
