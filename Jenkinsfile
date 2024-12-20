@@ -53,8 +53,8 @@ pipeline{
             junit 'target/surefire-reports/*.xml'
           }
         }
-
-     stage ('Sonar _Test'){
+    }
+     stage ('Sonar _Test') {
       steps{
         sh """
 
@@ -65,9 +65,8 @@ pipeline{
            -Dsonar.projectKey=$SONAR_PROJECT_KEY \ 
            -Dsonar.host.url=https://sonarcloud.io \ 
            -Dsonar.login=$SONAR_TOKEN """ 
-        """
+      
       }
-     }
      }
     stage ('Docker-Format')
      {
@@ -116,3 +115,4 @@ docker build --force-rm --no-cache --pull --rm=true --build-arg JAR_SOURCE=i27-$
   
   } 
   } 
+ 
