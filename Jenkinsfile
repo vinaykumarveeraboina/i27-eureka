@@ -127,7 +127,7 @@ pipeline{
         echo "************************  Deplpoying to Docker Dev  ********************************"
 
 
-        withCredentials([usernamePassword(credentialsId: 'DockerHost', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')])
+        withCredentials([usernamePassword(credentialsId: 'DockerHost', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]){
         
          
         // some block
@@ -138,6 +138,7 @@ pipeline{
              sh " sshpass -p ${PASSWORD}-v ssh-o StrictHostKeyChecking=no ${USERNAME}@${docker-dev-server} hostname -i  "
 
         }
+     }
 
     }
   
