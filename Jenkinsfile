@@ -23,7 +23,7 @@ pipeline{
         DOCKER_CREDS = credentials('DokcerHub')
         SONAR_ORGANIZATION = 'Githuborgnization'
         SONAR_PROJECT_KEY = 'vinaykumarveeraboina_i27-eureka'
-        SONAR_TOKEN = '9677d92d0b5f979ed92f17719e7de20bbc423195'
+        SONAR_TOKEN = '68a2bd72b33e964fd34cc26ef3fa180970f26e46'
     }
     tools{
         maven 'maven-3.8.8'
