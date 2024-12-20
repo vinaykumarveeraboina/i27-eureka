@@ -138,12 +138,27 @@ pipeline{
             // sh "sshpass -p ${PASSWORD}-v ssh-o StrictHostKeyChecking=no ${USERNAME}@${docker_dev_server} docker pull ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} "
           
           //pulling the contaienr 
-
+            echo " ******************   PULLING the container from docker hub ********************  "
            sh """
            sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker pull ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
           
            """
-           //runnng the container 
+
+
+           echo " ******************   stopping  the container     ********************  "
+           sh """
+           sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker stop ${env.APPLICATION_NAME}-dev
+          
+           """
+
+           echo " ******************   removing  the container  ********************  "
+           sh """
+           sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker remove  ${env.APPLICATION_NAME}-dev
+          
+           """
+
+
+            echo " ****************  runnng the container ***************** "
 
            sh """
            sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker run -d -p 5761:8761 --name ${env.APPLICATION_NAME}-dev  ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
