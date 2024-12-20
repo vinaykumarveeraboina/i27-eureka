@@ -22,7 +22,7 @@ pipeline{
         POM_PACKAGING = readMavenPom().getPackaging()
         DOCKER_CREDS = credentials('DokcerHub')
         SONAR_ORGANIZATION = 'Githuborgnization'
-        SONAR_PROJECT_KEY = 'i27-eureka'
+        SONAR_PROJECT_KEY = 'vinaykumarveeraboina_i27-eureka'
         SONAR_TOKEN = '9677d92d0b5f979ed92f17719e7de20bbc423195'
     }
     tools{
