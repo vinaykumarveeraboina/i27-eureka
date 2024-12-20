@@ -128,8 +128,9 @@ pipeline{
         DockerDeploy('dev','5761','8761').call()
         }
         }
+    }
   
-  stage ("Docker deploy to TEST env ")
+   stage ("Docker deploy to TEST env ")
     {
      steps{
         
@@ -140,7 +141,7 @@ pipeline{
       }
      }
 
-  stage ("Docker deploy to STAGE env ")
+   stage ("Docker deploy to STAGE env ")
     {
      steps{
         
@@ -150,7 +151,6 @@ pipeline{
         }
        }
     } 
-    }
   } 
 }
   
