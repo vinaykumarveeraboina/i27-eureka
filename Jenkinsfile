@@ -143,7 +143,7 @@ pipeline{
            sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker pull ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
           
            """
-
+          script{
           try {
 
            echo " ******************   stopping  the container     ********************  "
@@ -158,10 +158,11 @@ pipeline{
           
            """
           }
-          
+
           catch(err)
           {
             echo " caught the Error is ${err}"
+          }
           }
 
             echo " ****************  runnng the container ***************** "
@@ -177,6 +178,7 @@ pipeline{
   
   
   } 
-  } 
+  }
+  
 
  
