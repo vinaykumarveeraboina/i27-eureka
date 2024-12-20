@@ -135,7 +135,7 @@ pipeline{
          //with the help of this block the slave will be connecting the docker vm ,and execute the command to create the containers
 
          // sshpass -p -v ssh-o StrictHostKeyChecking=no username@ipaddess command 
-             sh "sshpass -p ${PASSWORD}-v ssh-o StrictHostKeyChecking=no ${USERNAME}@${docker-dev-server} docker pull ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} "
+             sh "sshpass -p ${PASSWORD}-v ssh-o StrictHostKeyChecking=no ${USERNAME}@${docker_dev_server} docker pull ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} "
 
         }
      }
