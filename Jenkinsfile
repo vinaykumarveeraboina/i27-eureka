@@ -60,7 +60,7 @@ pipeline{
 
            echo " ************************* starting sonar scan ************************ "
 
-           mvn sonar:sonar \
+           mvn -X sonar:sonar \
             -Dsonar.organization=${SONAR_ORGANIZATION} \
             -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
             -Dsonar.host.url=https://sonarcloud.io \
@@ -68,6 +68,7 @@ pipeline{
         """
       }
      }
+
     stage ('Docker-Format')
      {
       steps{
