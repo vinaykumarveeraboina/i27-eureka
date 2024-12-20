@@ -76,8 +76,6 @@
 				</configuration>
 			</plugin>
 		</plugins>
-	</build>
-	<build>
      <plugins>
          <plugin>
             <groupId>org.sonarsource.scanner.maven</groupId>
