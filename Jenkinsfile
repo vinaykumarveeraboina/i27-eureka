@@ -54,21 +54,22 @@ pipeline{
           }
         }
     }
-     stage ('Sonar _Test') {
+     stage ('Sonar _Test')
+      {
       
           steps {
-              withSonarQubeEnv('SonarQube') {
+              echo " *************************      STARTING SONAR ANALYSIS with Quality gate     ************************ "
+              withSonarQubeEnv('SonarQube') 
+              {
                 sh """
-
-                  echo " *************************      STARTING SONAR ANALYSIS with Quality gate     ************************ "
-
                 mvn clean verify sonar:sonar \
-                -Dsonar.projectKey=i127-eureka \
-                -Dsonar.host.url=${env.SONAR_URL} \
-                -Dsonar.login=${SONAR_TOKEN}
+                 -Dsonar.projectKey=i127-eureka \
+                 -Dsonar.host.url=${env.SONAR_URL} \
+                 -Dsonar.login=${SONAR_TOKEN}
+
                 """
               }
-            }
+          
           
               timeout(time: 2, unit: 'MINUTES') {
                 waitForQualityGate abortPipeline: true
