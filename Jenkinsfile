@@ -47,9 +47,11 @@ pipeline {
         {
           when {
             anyOf{
+              expression{
                params.buildOnly == 'YES'
               params.dockpush  == 'YES' 
               
+            }
             }
           
             steps {
@@ -62,9 +64,11 @@ pipeline {
          {
           when {
             anyOf{
+                expression{
                params.buildOnly == 'YES'
               params.dockpush  == 'YES' 
               
+            }
             }
             steps {
                 echo "Testing the ${env.APPLICATION_NAME} application"
