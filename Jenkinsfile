@@ -51,11 +51,12 @@ pipeline {
               params.dockpush  == 'YES' 
               
             }
-          }
+          
             steps {
                 echo "Building the ${env.APPLICATION_NAME} application"
                 sh "mvn clean package -DskipTests=true"
             }
+         }
         }
         stage('Unit-Test')
          {
@@ -65,7 +66,6 @@ pipeline {
               params.dockpush  == 'YES' 
               
             }
-          }
             steps {
                 echo "Testing the ${env.APPLICATION_NAME} application"
                 sh "mvn test"
@@ -75,6 +75,7 @@ pipeline {
                     junit 'target/surefire-reports/*.xml'
                 }
             }
+          }
         }
         stage('Sonar_Test')
          {
@@ -85,7 +86,7 @@ pipeline {
                params.scanOnly == 'YES' 
             }
             }
-          }
+          
             steps {
                 echo " ************************* STARTING SONAR ANALYSIS with Quality gate ************************"
                 withSonarQubeEnv('SonarQube') {
@@ -101,6 +102,7 @@ pipeline {
                 }
             }
           }
+         }
         /*stage('Docker-Format')
          {
             steps {
@@ -117,7 +119,7 @@ pipeline {
                params.dockerpush == 'YES' 
             }
             }
-          }
+          
             steps {
                 sh """
                 ls -la
@@ -133,6 +135,7 @@ pipeline {
                 """
             }
           }
+         }
         stage('Docker deploy to DEV') 
         {
           when {
@@ -141,14 +144,15 @@ pipeline {
                params.deployToDev == 'YES' 
             }
             }
-          }
+          
             steps {
                 script {
                     DockerDeploy('dev', '5761', '8761').call()
                 }
             }
         }
-        stage('Docker deploy to TEST env') 
+        }
+      stage('Docker deploy to TEST env') 
         {
           when {
             anyOf{
@@ -161,6 +165,7 @@ pipeline {
                     DockerDeploy('test', '6761', '8761').call()
                 }
             }
+         }
         }
         stage('Docker deploy to STAGE env')
          {
@@ -170,16 +175,17 @@ pipeline {
                params.deployToStage == 'YES' 
             }
             }
-          }
+          
             steps {
                 script {
                     DockerDeploy('stage', '7761', '8761').call()
                 }
             }
+          }
          }
     }
 }
-}
+
 
 // This method is developed for deploying our app in different environments
 def DockerDeploy(envdeploy, hostport, contport) {
