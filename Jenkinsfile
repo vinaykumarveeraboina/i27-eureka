@@ -53,13 +53,14 @@ pipeline {
               
             }
             }
+          }
           
             steps {
                 echo "Building the ${env.APPLICATION_NAME} application"
                 sh "mvn clean package -DskipTests=true"
             }
          }
-        }
+        
         stage('Unit-Test')
          {
           when {
@@ -70,6 +71,7 @@ pipeline {
               
             }
             }
+          }
             steps {
                 echo "Testing the ${env.APPLICATION_NAME} application"
                 sh "mvn test"
@@ -80,7 +82,7 @@ pipeline {
                 }
             }
           }
-        }
+        
         stage('Sonar_Test')
          {
 
@@ -90,6 +92,7 @@ pipeline {
                params.scanOnly == 'YES' 
             }
             }
+          }
           
             steps {
                 echo " ************************* STARTING SONAR ANALYSIS with Quality gate ************************"
@@ -106,7 +109,7 @@ pipeline {
                 }
             }
           }
-         }
+         
         /*stage('Docker-Format')
          {
             steps {
@@ -116,13 +119,14 @@ pipeline {
          }*/
 
         stage('Docker Build and Push')
-         {
-          when {
+         { 
+           when  {
             anyOf{
               expression{
                params.dockerpush == 'YES' 
             }
             }
+           }
           
             steps {
                 sh """
@@ -139,13 +143,14 @@ pipeline {
                 """
             }
           }
-         }
+        
         stage('Docker deploy to DEV') 
         {
           when {
             anyOf{
               expression{
                params.deployToDev == 'YES' 
+            }
             }
             }
           
@@ -155,7 +160,6 @@ pipeline {
                 }
             }
         }
-        }
       stage('Docker deploy to TEST env') 
         {
           when {
@@ -164,28 +168,29 @@ pipeline {
                params.deployToTest == 'YES' 
             }
             }
+          }
             steps {
                 script {
                     DockerDeploy('test', '6761', '8761').call()
                 }
             }
          }
-        }
+        
         stage('Docker deploy to STAGE env')
-         {
+        {
           when {
             anyOf{
               expression{
                params.deployToStage == 'YES' 
             }
             }
-          
+          }
             steps {
                 script {
                     DockerDeploy('stage', '7761', '8761').call()
                 }
             }
-          }
+          
          }
     }
 }
