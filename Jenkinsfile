@@ -49,7 +49,7 @@ pipeline {
             anyOf{
               expression{
                params.buildOnly == 'YES'
-              params.dockpush  == 'YES' 
+               params.dockerpush  == 'YES' 
               
             }
             }
@@ -67,7 +67,7 @@ pipeline {
             anyOf{
                 expression{
                params.buildOnly == 'YES'
-              params.dockpush  == 'YES' 
+              params.dockerpush  == 'YES' 
               
             }
             }
