@@ -1,7 +1,3 @@
-/* @Library ("com.i27academy.slb@master") _
-jfrogPipeline(
-    appName: 'eureka'
-) */
 
 //This jenkins file is for eureka deploy
 
@@ -21,7 +17,7 @@ pipeline{
         APPLICATION_NAME = 'eureka'
         POM_VERSION  = readMavenPom().getVersion()
         POM_PACKAGING = readMavenPom().getPackaging()
-        DOCKER_CREDS = credentials('DokcerHub')
+        DOCKER_CREDS = credentials('DockerHub')
         SONAR_URL = 'http://34.122.118.251:9000'
         
         SONAR_TOKEN = credentials('sonar-secret')
@@ -55,7 +51,7 @@ pipeline{
           }
         }
     }
-     stage ('Sonar _Test')
+    stage ('Sonar _Test')
       {
       
           steps {
@@ -75,7 +71,7 @@ pipeline{
               timeout(time: 5, unit: 'MINUTES') {
                 waitForQualityGate abortPipeline: true
               }
-     }
+         }
       }
 
     stage ('Docker-Format')
