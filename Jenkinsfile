@@ -179,6 +179,7 @@ pipeline {
          }
     }
 }
+}
 
 // This method is developed for deploying our app in different environments
 def DockerDeploy(envdeploy, hostport, contport) {
@@ -214,4 +215,4 @@ def DockerDeploy(envdeploy, hostport, contport) {
     }
   }
 }
-}
+
