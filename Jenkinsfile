@@ -1,4 +1,4 @@
-// This Jenkinsfile is for eureka deploy
+// This Jenkinsfile is for eureka deployment
 
 pipeline {
     agent {
