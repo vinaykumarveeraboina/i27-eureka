@@ -10,19 +10,19 @@ pipeline {
               description : " This will only build the application ")
       choice(name: 'scanOnly',
               choices : 'NO\nYES',
-              description : " This will only build the application ")
+              description : " This will only SCAN  the application ")
       choice(name: 'dockerpush',
               choices : 'NO\nYES',
-              description : " This will only build the application ")
+              description : " This will only build the application ,docker Build , docker push ")
       choice(name: 'deployToDev',
               choices : 'NO\nYES',
-              description : " This will only build the application ")
+              description : " This deploy the app to Dev ")
       choice(name: 'deployToTest',
               choices : 'NO\nYES',
-              description : " This will only build the application ")
+              description : " This deploy the app to Test  ")
       choice(name: 'deployToStage',
               choices : 'NO\nYES',
-              description : " This will only build the application ")
+              description : " This deploy the app to stage  ")
     }
     options { 
         // Discard old builds
