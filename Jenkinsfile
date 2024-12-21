@@ -4,6 +4,26 @@ pipeline {
     agent {
         label 'k8s-slave'
     }
+    parameters{
+      choice(name: 'buildOnly',
+              choices : 'NO\nYES',
+              description : " This will only build the application ")
+      choice(name: 'scanOnly',
+              choices : 'NO\nYES',
+              description : " This will only build the application ")
+      choice(name: 'dockerpush',
+              choices : 'NO\nYES',
+              description : " This will only build the application ")
+      choice(name: 'deployToDev',
+              choices : 'NO\nYES',
+              description : " This will only build the application ")
+      choice(name: 'deployToTest',
+              choices : 'NO\nYES',
+              description : " This will only build the application ")
+      choice(name: 'deployToStage',
+              choices : 'NO\nYES',
+              description : " This will only build the application ")
+    }
     options { 
         // Discard old builds
         buildDiscarder(logRotator(daysToKeepStr: '7', numToKeepStr: '5'))
@@ -25,6 +45,13 @@ pipeline {
     {
         stage('Build') 
         {
+          when {
+            anyOf{
+               params.buildOnly == 'YES'
+              params.dockpush  == 'YES' 
+              
+            }
+          }
             steps {
                 echo "Building the ${env.APPLICATION_NAME} application"
                 sh "mvn clean package -DskipTests=true"
@@ -32,6 +59,13 @@ pipeline {
         }
         stage('Unit-Test')
          {
+          when {
+            anyOf{
+               params.buildOnly == 'YES'
+              params.dockpush  == 'YES' 
+              
+            }
+          }
             steps {
                 echo "Testing the ${env.APPLICATION_NAME} application"
                 sh "mvn test"
@@ -44,6 +78,14 @@ pipeline {
         }
         stage('Sonar_Test')
          {
+
+          when {
+            anyOf{
+              expression{
+               params.scanOnly == 'YES' 
+            }
+            }
+          }
             steps {
                 echo " ************************* STARTING SONAR ANALYSIS with Quality gate ************************"
                 withSonarQubeEnv('SonarQube') {
@@ -59,15 +101,23 @@ pipeline {
                 }
             }
           }
-        stage('Docker-Format')
+        /*stage('Docker-Format')
          {
             steps {
                 echo "ACTUAL_FORMAT: ${APPLICATION_NAME}-${POM_VERSION}.${POM_PACKAGING}"
                 echo "CUSTOM_FORMAT: ${APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${POM_PACKAGING}"
             }
-         }
+         }*/
+
         stage('Docker Build and Push')
          {
+          when {
+            anyOf{
+              expression{
+               params.dockerpush == 'YES' 
+            }
+            }
+          }
             steps {
                 sh """
                 ls -la
@@ -85,6 +135,13 @@ pipeline {
           }
         stage('Docker deploy to DEV') 
         {
+          when {
+            anyOf{
+              expression{
+               params.deployToDev == 'YES' 
+            }
+            }
+          }
             steps {
                 script {
                     DockerDeploy('dev', '5761', '8761').call()
@@ -93,6 +150,12 @@ pipeline {
         }
         stage('Docker deploy to TEST env') 
         {
+          when {
+            anyOf{
+              expression{
+               params.deployToTest == 'YES' 
+            }
+            }
             steps {
                 script {
                     DockerDeploy('test', '6761', '8761').call()
@@ -101,6 +164,13 @@ pipeline {
         }
         stage('Docker deploy to STAGE env')
          {
+          when {
+            anyOf{
+              expression{
+               params.deployToStage == 'YES' 
+            }
+            }
+          }
             steps {
                 script {
                     DockerDeploy('stage', '7761', '8761').call()
