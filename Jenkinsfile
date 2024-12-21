@@ -21,14 +21,17 @@ pipeline {
         maven 'maven-3.8.8'
         jdk 'Jdk17'
     }
-    stages {
-        stage('Build') {
+    stages 
+    {
+        stage('Build') 
+        {
             steps {
                 echo "Building the ${env.APPLICATION_NAME} application"
                 sh "mvn clean package -DskipTests=true"
             }
         }
-        stage('Unit-Test') {
+        stage('Unit-Test')
+         {
             steps {
                 echo "Testing the ${env.APPLICATION_NAME} application"
                 sh "mvn test"
@@ -39,7 +42,8 @@ pipeline {
                 }
             }
         }
-        stage('Sonar_Test') {
+        stage('Sonar_Test')
+         {
             steps {
                 echo " ************************* STARTING SONAR ANALYSIS with Quality gate ************************"
                 withSonarQubeEnv('SonarQube') {
@@ -54,14 +58,16 @@ pipeline {
                     waitForQualityGate abortPipeline: true
                 }
             }
-        }
-        stage('Docker-Format') {
+          }
+        stage('Docker-Format')
+         {
             steps {
                 echo "ACTUAL_FORMAT: ${APPLICATION_NAME}-${POM_VERSION}.${POM_PACKAGING}"
                 echo "CUSTOM_FORMAT: ${APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${POM_PACKAGING}"
             }
-        }
-        stage('Docker Build and Push') {
+         }
+        stage('Docker Build and Push')
+         {
             steps {
                 sh """
                 ls -la
@@ -76,28 +82,31 @@ pipeline {
                 docker push ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
                 """
             }
-        }
-        stage('Docker deploy to DEV') {
+          }
+        stage('Docker deploy to DEV') 
+        {
             steps {
                 script {
                     DockerDeploy('dev', '5761', '8761').call()
                 }
             }
         }
-        stage('Docker deploy to TEST env') {
+        stage('Docker deploy to TEST env') 
+        {
             steps {
                 script {
                     DockerDeploy('test', '6761', '8761').call()
                 }
             }
         }
-        stage('Docker deploy to STAGE env') {
+        stage('Docker deploy to STAGE env')
+         {
             steps {
                 script {
                     DockerDeploy('stage', '7761', '8761').call()
                 }
             }
-        }
+         }
     }
 }
 
