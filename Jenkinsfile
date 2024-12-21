@@ -112,6 +112,8 @@ pipeline {
 
 // This method is developed for deploying our app in different environments
 def DockerDeploy(envdeploy, hostport, contport) {
+
+  return{
     echo "************************ Deploying to Docker $envdeploy ********************************"
 
     withCredentials([usernamePassword(credentialsId: 'dockerdev', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
@@ -140,4 +142,5 @@ def DockerDeploy(envdeploy, hostport, contport) {
         sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker run -d -p $hostport:$contport --name ${env.APPLICATION_NAME}-$envdeploy ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
         """
     }
+  }
 }
