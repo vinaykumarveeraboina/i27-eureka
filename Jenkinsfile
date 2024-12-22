@@ -173,15 +173,16 @@ def DockerDeploy(envdeploy, hostport, contport) {
 }
 
 def imagevalidation() {
-    println("pulling the docker image")
+    println(" **********************  pulling the docker image *******************************")
     try {
         sh """
         docker pull ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
         """
     } catch (Exception e) {
-        println("OOPS! Image with this tag is not available")
-        println("building application")
+        println( " *******************   OOPS! Image with this tag is not available  ************************* ")
+        println("*********************** Building Application  *****************************************")
         applicationBuild()
+        println("*********************** Image build and push to Hub  *****************************************")
         dockerBuildPush()
     }
 }
