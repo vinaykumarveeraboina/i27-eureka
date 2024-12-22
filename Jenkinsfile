@@ -165,7 +165,7 @@ pipeline {
           }
             steps {
                 script {
-                      imagevalidation().call()
+                   imagevalidation().call()
                     DockerDeploy('test', '6761', '8761').call()
                 }
             }
@@ -235,6 +235,7 @@ def imagevalidation()
      // if image with latest commit is there execute the the try block if not excute the catch block
     script{
     try{
+
       ssh """
       docker pull ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
       """
@@ -245,11 +246,11 @@ def imagevalidation()
         
         println( " building application ")
 
-    
+       script{
        applicationBuild().call()
        dockerBuildPush().call()
        
-     
+       }
 
     }
     }
