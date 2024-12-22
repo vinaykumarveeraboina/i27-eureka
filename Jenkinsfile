@@ -126,9 +126,16 @@ pipeline {
         }
         stage('Docker deploy to STAGE env') {
             when {
+              allOf{
+                  //this will execute when the branch is release and deployToStage==yes 
+                  
                 anyOf {
                     expression { params.deployToStage == 'YES' }
                 }
+                anyOf {
+                    expression { branch == 'release/*' }
+                }
+            }
             }
             steps {
                 script {
