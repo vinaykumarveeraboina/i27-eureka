@@ -56,9 +56,11 @@ pipeline {
           }
           
             steps {
+              script{
                 applicationBuild().call()
             }
          }
+        }
         
         stage('Unit-Test')
          {
