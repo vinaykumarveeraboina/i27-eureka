@@ -138,6 +138,9 @@ pipeline {
             }
             }
             steps {
+               timeout( time :'300', UNIT :'SECONDS'){
+                input message : " Deploying  ${env.APPLICATION_NAME} to stage ??? " , ok :'YES', submitter : 'owner'
+               }
                 script {
                     imagevalidation()
                     DockerDeploy('stage', '7761', '8761')
