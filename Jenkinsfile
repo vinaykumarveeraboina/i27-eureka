@@ -138,7 +138,7 @@ pipeline {
             }
             }
             steps {
-               timeout( time :300, UNIT :'SECONDS'){
+               timeout( time :300, unit :'SECONDS'){
                input message : " Deploying  ${env.APPLICATION_NAME} to stage ??? " , ok :'YES', submitter : 'owner'
                }
                 script {
