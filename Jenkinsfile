@@ -56,8 +56,7 @@ pipeline {
           }
           
             steps {
-                echo "Building the ${env.APPLICATION_NAME} application"
-                sh "mvn clean package -DskipTests=true"
+                applicationBuild().call()
             }
          }
         
@@ -129,19 +128,10 @@ pipeline {
            }
           
             steps {
-                sh """
-                ls -la
-                cp ${workspace}/target/i27-${APPLICATION_NAME}-${POM_VERSION}.${POM_PACKAGING} ./.cicd
-                ls -la ./.cicd
-                echo "*********************** Building Docker Image *********************************"
-                docker build --force-rm --no-cache --pull --rm=true --build-arg JAR_SOURCE=i27-${APPLICATION_NAME}-${POM_VERSION}.${POM_PACKAGING} -t ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd
-                docker images 
-                echo " ***************** Docker login ************************"
-                docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
-                echo " ********************* Docker push *************************************"
-                docker push ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
-                """
-            }
+                
+                dockerBuildPush().call()
+
+              }
           }
         
         stage('Docker deploy to DEV') 
@@ -156,6 +146,7 @@ pipeline {
           
             steps {
                 script {
+                    imagevalidation().call()
                     DockerDeploy('dev', '5761', '8761').call()
                 }
             }
@@ -171,6 +162,7 @@ pipeline {
           }
             steps {
                 script {
+                      imagevalidation().call()
                     DockerDeploy('test', '6761', '8761').call()
                 }
             }
@@ -187,6 +179,7 @@ pipeline {
           }
             steps {
                 script {
+                      imagevalidation().call()
                     DockerDeploy('stage', '7761', '8761').call()
                 }
             }
@@ -231,3 +224,58 @@ def DockerDeploy(envdeploy, hostport, contport) {
   }
 }
 
+
+def imagevalidation()
+{
+  return{
+    println("pulling the docker image") 
+     // if image with latest commit is there execute the the try block if not excute the catch block
+    try(){
+      ssh """
+      docker pull ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
+      """
+    }
+    catch (Exception e)
+    {
+        println( " OOPS ! image with this tag is not available ")
+        
+        println( " building application ")
+
+    
+       applicationBuild().call()
+       dockerBuildPush().call()
+       
+     
+
+    }
+  }
+
+  }
+
+// This method will Build the application 
+def applicationBuild()
+{
+  return{
+  echo "Building the ${env.APPLICATION_NAME} application"
+  sh "mvn clean package -DskipTests=true"
+}
+}
+
+// This function will build the image and push to docker hub 
+def dockerBuildPush()
+{
+  return{
+    sh """
+                ls -la
+                cp ${workspace}/target/i27-${APPLICATION_NAME}-${POM_VERSION}.${POM_PACKAGING} ./.cicd
+                ls -la ./.cicd
+                echo "*********************** Building Docker Image *********************************"
+                docker build --force-rm --no-cache --pull --rm=true --build-arg JAR_SOURCE=i27-${APPLICATION_NAME}-${POM_VERSION}.${POM_PACKAGING} -t ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd
+                docker images 
+                echo " ***************** Docker login ************************"
+                docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
+                echo " ********************* Docker push *************************************"
+                docker push ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
+                """
+  }
+}
