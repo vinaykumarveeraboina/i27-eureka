@@ -1,2 +1,2 @@
 @Library("com.i27academy.slb@main") _
-dockerpipeline()
+dockerPipeline()
