@@ -161,7 +161,7 @@ pipeline {
 def DockerDeploy(envdeploy, hostport, contport) {
     echo "************************ Deploying to Docker $envdeploy ********************************"
 
-    withCredentials([usernamePassword(credentialsId: 'dockerdev', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+    withCredentials([usernamePassword(credentialsId: 'DockerHub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
         echo "****************** PULLING the container from docker hub ********************"
         sh """
         sshpass -p ${env.PASSWORD} ssh -o StrictHostKeyChecking=no ${env.USERNAME}@${env.docker_dev_server} docker pull ${env.DOCKERHUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}
