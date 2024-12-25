@@ -1,4 +1,2 @@
 @Library("com.i27academy.slb@main") _
-k8sPipeline(
-    appName : 'eureka'
-)
+k8sPipeline()
