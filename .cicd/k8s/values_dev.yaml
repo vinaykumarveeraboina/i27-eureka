@@ -1,3 +1,7 @@
-name : i27-eureka-dev
+fullname : i27-eureka-dev
 replicas : 
  default: 1
+image :
+ name: dokcer.io/vinaykumarveeraboina/eureka
+ tag: dev
+targetPort : 8761 
