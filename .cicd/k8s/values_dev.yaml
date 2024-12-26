@@ -1,4 +1,5 @@
 fullname : i27-eureka-dev
+name : i27-eureka-dev
 replicas : 
  default: 1
 image :
