@@ -4,5 +4,5 @@ replicas :
  default: 1
 image :
  name: dokcer.io/vinaykumarveeraboina/eureka
- tag: dev
+ tag: random
 targetPort : 8761 
