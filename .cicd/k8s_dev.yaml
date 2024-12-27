@@ -12,7 +12,9 @@ spec:
       labels:
         name: i27-eureka-dev
     spec:
-      containers:
+     imagePullSecrets:
+     - name : jfrogsecret
+     containers:
         - name: i27-eureka-dev
         # what image should i place here ????/
           image: DIT
