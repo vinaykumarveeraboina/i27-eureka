@@ -1,5 +1,5 @@
-fullname : i27-eureka-tst
-name : i27-eureka-tst
+fullname : i27-eureka-stage
+name : i27-eureka-stage
 replicas : 
  default: 1
 image :
