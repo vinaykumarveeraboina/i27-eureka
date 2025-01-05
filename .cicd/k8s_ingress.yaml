@@ -4,6 +4,7 @@ metadata:
   name: ${appName}-${env}-${namespace}-ingress
   namespace: ${namespace}
 spec:
+  ingressClassName: nginx 
   rules:
     - http:
         paths:
